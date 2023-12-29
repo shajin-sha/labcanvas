@@ -7,7 +7,6 @@ import 'package:file_saver/file_saver.dart';
 import 'package:file_saver/file_saver_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:graphical_abstract/helper/api_helper.dart';
 import 'package:graphical_abstract/helper/message_helper.dart';

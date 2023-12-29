@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:graphical_abstract/theme/theme.dart';
 import 'package:graphical_abstract/theme/theme_const.dart';
 import 'package:graphical_abstract/view/home_view.dart';
@@ -12,7 +11,6 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-  await dotenv.load(fileName: ".env");
   // Add MetaSEO just into Web platform condition
   if (kIsWeb) {
     // Define MetaSEO object

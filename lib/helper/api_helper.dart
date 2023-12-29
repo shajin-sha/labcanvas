@@ -18,7 +18,7 @@ class API {
       body: jsonEncode(body),
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer ${dotenv.env['OPENAI']}",
+        "Authorization": "Bearer ${const String.fromEnvironment('OPENAI', defaultValue: '')}",
       },
     );
 
