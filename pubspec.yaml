@@ -51,6 +51,7 @@ dependencies:
   meta_seo: ^3.0.8
   html: ^0.15.4
   htmltopdfwidgets: ^0.0.9+2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,7 @@ flutter:
     - assets/times_new_roman_bold.ttf
     - assets/times_new_roman_italic.ttf
     - assets/times_new_roman.ttf
+    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

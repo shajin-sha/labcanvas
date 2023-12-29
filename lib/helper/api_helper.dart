@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:graphical_abstract/theme/theme_const.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +18,7 @@ class API {
       body: jsonEncode(body),
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer ${dotenv.env['VAR_NAME']}",
       },
     );
 
