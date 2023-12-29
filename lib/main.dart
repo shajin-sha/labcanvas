@@ -24,10 +24,10 @@ void main() async {
     meta.ogTitle(ogTitle: "labcanvas.io | Graphical Abstract Analyzer");
     meta.ogDescription(ogDescription: "Analyze your scientific research papers with our revolutionary Graphical Abstract Analyzer & Suggestion AI tool. ");
     meta.ogImage(ogImage: "https://iili.io/JRVAeOG.md.png");
-    meta.robots(robotsName: RobotsName.google, content: "index, follow");
-    meta.robots(robotsName: RobotsName.googleBot, content: "index, follow");
-    meta.robots(robotsName: RobotsName.googleBotNews, content: "index, follow");
-    meta.robots(robotsName: RobotsName.googleSiteVerification, content: "index, follow");
+    meta.robots(robotsName: RobotsName.google, content: "all");
+    meta.robots(robotsName: RobotsName.googleBot, content: "all");
+    meta.robots(robotsName: RobotsName.googleBotNews, content: "all");
+    meta.robots(robotsName: RobotsName.googleSiteVerification, content: "all");
   }
   runApp(const App());
 }
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => GraphicalAbstractViewModel())],
+      providers: [ChangeNotifierProvider<GraphicalAbstractViewModel>(create: (_) => GraphicalAbstractViewModel())],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: CONST.appName,

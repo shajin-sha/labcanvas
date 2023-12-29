@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:file_saver/file_saver_web.dart';
+// import 'package:file_saver/file_saver_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +24,7 @@ class GraphicalAbstractViewModel with ChangeNotifier {
   String? errorMessage;
   String writtenAbstract = "";
   String? result;
+  int overallScore = 0;
   ScrollController scrollController = ScrollController();
 
   void pickGraphicalAbstractFile() async {
@@ -35,6 +36,18 @@ class GraphicalAbstractViewModel with ChangeNotifier {
     } else {
       log("No file selected");
     }
+  }
+
+  double calculateTotalPrice({required double inputTokenPricePer1k, required double outputTokenPricePer1k, required int numberOfInputTokens, required int numberOfOutputTokens}) {
+    // Assuming you have the number of input tokens as an example (e.g., 5000 tokens)
+    //* Return amount will be in USD
+
+    double totalPrice = (numberOfInputTokens / 1000) * inputTokenPricePer1k + (numberOfOutputTokens / 1000) * outputTokenPricePer1k;
+
+    print("Total COST : $totalPrice");
+    print("Total COST IN INR : ${totalPrice * 82.18}");
+
+    return totalPrice;
   }
 
   void onWrittenAbstractChanged(String value) {
@@ -71,9 +84,10 @@ class GraphicalAbstractViewModel with ChangeNotifier {
 
   Future<void> copyResultToClipboard(BuildContext context) async {
     if (result != null) {
-      await Clipboard.setData(ClipboardData(text: result!));
+      await Clipboard.setData(ClipboardData(text: result!)).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), backgroundColor: Colors.green));
+      });
       // Show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), backgroundColor: Colors.green));
     }
   }
 
@@ -108,6 +122,7 @@ class GraphicalAbstractViewModel with ChangeNotifier {
 
     pdf.addPage(
       pw.MultiPage(
+        maxPages: 20,
         theme: pw.ThemeData.withFont(
           base: pw.Font.ttf(await rootBundle.load("assets/times_new_roman.ttf")),
           bold: pw.Font.ttf(await rootBundle.load("assets/times_new_roman_bold.ttf")),
@@ -140,14 +155,14 @@ class GraphicalAbstractViewModel with ChangeNotifier {
         customMimeType: "application/pdf",
       );
     } else {
-      FileSaverWeb.downloadFile(
-        FileModel(
-          name: 'graphical-abstract-review-report',
-          bytes: bytes,
-          ext: 'pdf',
-          mimeType: "application/pdf",
-        ),
-      );
+      // FileSaverWeb.downloadFile(
+      //   FileModel(
+      //     name: 'graphical-abstract-review-report',
+      //     bytes: bytes,
+      //     ext: 'pdf',
+      //     mimeType: "application/pdf",
+      //   ),
+      // );
     }
   }
 
@@ -174,18 +189,14 @@ class GraphicalAbstractViewModel with ChangeNotifier {
                 "content": [
                   {
                     "type": "text",
-                    "text": """You are a highly knowledgeable scientific image analysis expert with deep knowledge in graphic design and scientific illustration. Your task is to examine the following image in detail. The image is a graphical abstract of a research paper. Analyze user prompt. It gives the context and details about the research paper. You need to make sure that the message in user prompt is effectively communicated with clarity in graphical abstract. Give suggestions to improve the typography, colors, composition, layout, infomration density, readbility and clarity. We want to optimize this for effectiveness of communication. & user may provide written abstract for the paper.
+                    "text": """You are a highly knowledgeable scientific image analysis expert with deep knowledge in graphic design and scientific illustration. Your task is to examine the following image in detail. The image is a graphical abstract of a research paper. Analyze user prompt. It gives the context and details about the research paper. You need to make sure that the message in user prompt is effectively communicated with clarity in graphical abstract. Give suggestions to improve the typography, colors, composition, layout, information density, readability and clarity. We want to optimize this for effectiveness of communication. & user may provide written abstract for the paper.
+
+                    lus at end give overall score for the graphical abstract given by user (not linked with your suggestions) out of 5. 5 being the best. (Eg: Overall Score: 3/5) follow this same format.
 
                     IMPORTANT:
-                    Your output should be in valid markdown format & Do't use ### ( no need to use heading tags )""",
+                    Your output should be in valid markdown format.
+                    """,
                   },
-                  {
-                    "type": "image_url",
-                    "image_url": {
-                      "url": await getImageAsBase64(),
-                      "detail": "high",
-                    }
-                  }
                 ]
               },
               {
@@ -202,14 +213,21 @@ class GraphicalAbstractViewModel with ChangeNotifier {
                 ]
               },
             ],
-            "max_tokens": 3000,
+            "max_tokens": 4096,
           },
         );
 
         if (response is Success) {
-          print(response.data);
           result = response.data["choices"][0]["message"]["content"];
-          log(result!);
+          calculateTotalPrice(inputTokenPricePer1k: 0.01, outputTokenPricePer1k: 0.03, numberOfInputTokens: response.data["usage"]['prompt_tokens'], numberOfOutputTokens: response.data["usage"]['completion_tokens']);
+          try {
+            RegExp regex = RegExp(r'Overall\s*Score\s*:\s*([0-9]+/[0-9]+)', caseSensitive: false);
+
+            Match? match = regex.firstMatch(result!);
+            overallScore = int.parse(match!.group(1)!.split("/")[0]);
+          } on Exception catch (e) {
+            log(e.toString());
+          }
         } else {
           errorMessage = "Something went wrong!";
           isError = true;

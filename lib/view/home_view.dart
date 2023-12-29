@@ -9,10 +9,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:graphical_abstract/helper/message_helper.dart';
 import 'package:graphical_abstract/theme/color.dart';
 import 'package:graphical_abstract/view/elements/button.dart';
+import 'package:graphical_abstract/view/elements/overall_score.dart';
 import 'package:graphical_abstract/view/elements/text_input.dart';
 import 'package:graphical_abstract/viewmodel/graphical_abstract_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/io/seo_widget.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -57,7 +59,7 @@ class HomeView extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Text("Get smart design feedback and enhance your research graphics", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: ResponsiveHelpers.isMobile(context) ? 7 : 15, color: UiColor.darkGreyColor)),
+                  Text("Get smart design feedback and enhance your research graphics", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: ResponsiveHelpers.isMobile(context) ? 7 : 15, color: UiColor.extraDarkGreyColor)),
                   const SizedBox(height: 20),
                   //* Image upload (Graphical abstract)
                   DottedBorder(
@@ -69,18 +71,18 @@ class HomeView extends StatelessWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         width: 630,
-                        height: 250.0 + (context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null ? 0.0 : 150.0),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                        height: 210.0 + (context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null ? 0.0 : 190.0),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                         child: Column(
                           children: [
                             const SizedBox(height: 20),
-                            context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null ? Text('Upload your\n graphical abstract here', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold), textAlign: TextAlign.center) : Text("File chosen: ${context.read<GraphicalAbstractViewModel>().graphicalAbstractFile?.files.single.name}", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                            context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null ? Text('Upload Graphical Abstract Here', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold), textAlign: TextAlign.center) : Text("File chosen: ${context.read<GraphicalAbstractViewModel>().graphicalAbstractFile?.files.single.name}", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                             const SizedBox(height: 20),
                             context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null
                                 ? Icon(CupertinoIcons.cloud_upload, size: 50, color: UiColor.primaryColor)
                                 : Container(
                                     width: 630,
-                                    height: 250 - 66 + 150.0,
+                                    height: 210 - 90 + 190.0,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       border: Border.all(color: Theme.of(context).colorScheme.primary, style: BorderStyle.solid, width: 1),
@@ -101,8 +103,10 @@ class HomeView extends StatelessWidget {
                             if (context.watch<GraphicalAbstractViewModel>().graphicalAbstractFile == null)
                               Column(
                                 children: [
-                                  Text('Max 25 MB', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 12, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
-                                  Text("By uploading your graphical abstract, you agree to our Terms of Service and Privacy Policy", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 8, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
+                                  Text('Max 15 MB', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 12, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
+                                  const SizedBox(height: 10),
+                                  // High resolution images are recommended for better results
+                                  Text('High resolution images are recommended for better results\nSupported formats: JPEG, PNG', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 10, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
                                 ],
                               ),
                           ],
@@ -115,7 +119,7 @@ class HomeView extends StatelessWidget {
                   // * Text abstract
                   SizedBox(
                     width: 630,
-                    child: TextInput(maxLines: 4, hintText: "Written abstract..", helperText: "Your written abstract for the paper", onChanged: (value) => context.read<GraphicalAbstractViewModel>().onWrittenAbstractChanged(value)),
+                    child: TextInput(maxLines: 4, hintText: "Paste Written abstract..", helperText: "Your written abstract for the paper", onChanged: (value) => context.read<GraphicalAbstractViewModel>().onWrittenAbstractChanged(value)),
                   ),
 
                   const SizedBox(height: 20),
@@ -125,11 +129,14 @@ class HomeView extends StatelessWidget {
                     width: 630,
                     title: "Analyze the image",
                     onPressed: () => context.read<GraphicalAbstractViewModel>().analyzeGraphicalAbstract(context),
-                    // onPressed: () => context.read<GraphicalAbstractViewModel>().createPDFFromResultX(),
                     icon: Icons.try_sms_star,
                     isDisabled: context.watch<GraphicalAbstractViewModel>().isLoading,
                     isLoading: context.watch<GraphicalAbstractViewModel>().isLoading,
                   ),
+                  if (context.watch<GraphicalAbstractViewModel>().isLoading == false) const SizedBox(height: 20),
+                  if (context.watch<GraphicalAbstractViewModel>().isLoading == false) Text("By clicking on the button, you agree to our Terms of Service and Privacy Policy", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 10, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
+                  if (context.watch<GraphicalAbstractViewModel>().isLoading == false) const SizedBox(height: 10),
+
                   // Please be patient while we analyze your graphical abstract
                   if (context.watch<GraphicalAbstractViewModel>().isLoading) Text("\nPlease be patient while we analyze your graphical abstract\nThis may take 10-20 seconds only.", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 12, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
                   if (context.watch<GraphicalAbstractViewModel>().result != null)
@@ -142,6 +149,8 @@ class HomeView extends StatelessWidget {
                               ? MediaQuery.of(context).size.width / 1
                               : MediaQuery.of(context).size.width,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 50),
                           Padding(
@@ -205,6 +214,10 @@ class HomeView extends StatelessWidget {
                                   ),
 
                                 Divider(height: 20, thickness: 1, color: UiColor.darkGreyColor),
+
+                                // Over all score
+                                const OverallScore(),
+
                                 SizedBox(
                                   child: Markdown(
                                     selectable: true,
