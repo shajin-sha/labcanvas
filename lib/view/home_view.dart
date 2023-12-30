@@ -14,7 +14,7 @@ import 'package:graphical_abstract/view/elements/overall_score.dart';
 import 'package:graphical_abstract/view/elements/text_input.dart';
 import 'package:graphical_abstract/viewmodel/graphical_abstract_viewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:seo/io/seo_widget.dart';
+// import 'package:seo/io/seo_widget.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
