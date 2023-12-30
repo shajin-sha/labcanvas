@@ -13,6 +13,7 @@ class API {
   //* It will handle to pass api_key, api_secret and system_id to all requests.
   static Future<dynamic> post(String url, {Map<String, dynamic>? body}) async {
     //* All requests are made using post method.
+    print(const String.fromEnvironment('OPENAI', defaultValue: ''));
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(body),
@@ -25,6 +26,7 @@ class API {
     if (response.statusCode == 200) {
       return Success(data: jsonDecode(response.body));
     } else {
+      print(response.body);
       try {
         return Failure(message: "Something went wrong.", data: jsonDecode(response.body));
       } catch (e) {

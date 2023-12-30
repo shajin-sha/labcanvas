@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:graphical_abstract/helper/message_helper.dart';
 import 'package:graphical_abstract/theme/color.dart';
+import 'package:graphical_abstract/view/elements/app_bar.dart';
 import 'package:graphical_abstract/view/elements/button.dart';
 import 'package:graphical_abstract/view/elements/overall_score.dart';
 import 'package:graphical_abstract/view/elements/text_input.dart';
 import 'package:graphical_abstract/viewmodel/graphical_abstract_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:seo/io/seo_widget.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -22,6 +22,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const LabCanvasAppBar()),
       body: Padding(
         padding: EdgeInsets.all(ResponsiveHelpers.isMobile(context) ? 10 : 0),
         child: ListView(
@@ -29,31 +30,6 @@ class HomeView extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           shrinkWrap: true,
           children: [
-            //* APP BAR
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Seo.text(text: "labcanvas", child: Text("labcanvas", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold))),
-                        const SizedBox(width: 5),
-                        Chip(label: Text('BETA', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 10, color: Colors.white)), backgroundColor: Theme.of(context).colorScheme.secondary, labelPadding: EdgeInsets.zero, padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2), visualDensity: VisualDensity.compact),
-                      ],
-                    ),
-                    Text(
-                      'Graphical Abstract Ai',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 8),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             const Divider(height: 0),
             Center(
               child: Column(
@@ -138,7 +114,7 @@ class HomeView extends StatelessWidget {
                   if (context.watch<GraphicalAbstractViewModel>().isLoading == false) const SizedBox(height: 10),
 
                   // Please be patient while we analyze your graphical abstract
-                  if (context.watch<GraphicalAbstractViewModel>().isLoading) Text("\nPlease be patient while we analyze your graphical abstract\nThis may take 10-20 seconds only.", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 12, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
+                  if (context.watch<GraphicalAbstractViewModel>().isLoading) Text("\nPlease be patient while we analyze your graphical abstract\nThis may take 10-15 seconds only.", style: Theme.of(context).textTheme.labelMedium?.copyWith(fontSize: 12, color: UiColor.darkGreyColor), textAlign: TextAlign.center),
                   if (context.watch<GraphicalAbstractViewModel>().result != null)
                     SizedBox(
                       width: ResponsiveHelpers.isDesktop(context)
